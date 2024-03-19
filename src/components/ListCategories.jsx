@@ -1,7 +1,6 @@
 import React from "react";
 
-function ListCategories(){
-    const [categoryIndex, setCategoryIndex] = React.useState(0)
+function ListCategories({ value, onClickValueCategory }){
 
     const categories = [
         'Все',
@@ -12,15 +11,15 @@ function ListCategories(){
         'Закрытая',
     ]
 
-    const onClickCategory = (index) => {
-        setCategoryIndex(index)
-    }
 
     return (
         <div className="categories">
             <ul>
-                {categories.map((value, index) => (
-                        <li onClick={() => onClickCategory(index)} className={categoryIndex === index ? 'active' : ''}>{ value }</li>
+                {categories.map((categoryName, index) => (
+                        <li key={ index } // можно использовать индекс, если только массив статичный!!!
+                            onClick={() => onClickValueCategory(index)}
+                            className={value === index ? 'active' : ''}>
+                            { categoryName }</li>
                     ))}
             </ul>
         </div>

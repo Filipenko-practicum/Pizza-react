@@ -1,37 +1,52 @@
 import './scss/app.scss';
 import LogoHeader from "./components/LogoHeader";
-import ListCategories from "./components/ListCategories";
-import SortPizza from "./components/SortPizza";
-import PizzaBlock from "./components/PizzaBlock";
-import pizza from "./assets/pizza.json"
+import { Home } from "./pages/Home";
+import  Cart  from "./pages/Cart";
+import NotFound from "./pages/NotFound";
+import {
+    Routes,
+    Route,
+} from "react-router-dom";
 
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { increment, decrement } from "./redux/slices/filterSlice";
+
+export const AppContext = React.createContext();
 
 function App() {
+    const [ searchValue, setSearchValue ] = React.useState('')
+    const count = useSelector((state) => state.counter.value)
+    const dispatch = useDispatch()
+
   return (
       <div className="wrapper">
-        <LogoHeader/>
-        <div className="content">
-          <div className="container">
-            <div className="content__top">
-                <ListCategories/>
-              <SortPizza/>
-            </div>
-            <h2 className="content__title">Все пиццы</h2>
-            <div className="content__items">
-                {
-                    pizza.map((obj)=> (
-                        <PizzaBlock { ...obj }
-                            // Запись сверху {...obj} это спред оператор,он берёт все св-ва объекта
-                            // title={ obj.title }
-                            // price={ obj.price }
-                            // img = { obj.imageUrl }
-                            // size = { obj.sizes }
-                            // type = { obj.types }
-                        />))
-                }
-            </div>
-          </div>
-        </div>
+          <button
+              aria-label="Increment value"
+              onClick={() => dispatch(increment())}
+          >
+              Increment
+          </button>
+          <span>{count}</span>
+          <button
+              aria-label="Decrement value"
+              onClick={() => dispatch(decrement())}
+          >
+              Decrement
+          </button>
+
+
+       <AppContext.Provider value={{ searchValue, setSearchValue }}>
+           <LogoHeader />
+           <div className="content">
+               <Routes>
+                   <Route path="/" element={ <Home searchValue={ searchValue }/> }/>
+                   <Route path="/cart" element={ <Cart/> }/>
+                   <Route path="*" element={ <NotFound/> }/>
+                   {/*path со * означает, что если вышеперечисленные пути не найдены, то выдаётся стр с ошибкой!*/}
+               </Routes>
+           </div>
+       </AppContext.Provider>
       </div>
   );
 }

@@ -1,4 +1,20 @@
-function SortPizza (){
+import React from "react";
+
+
+function SortPizza ({ sortValue, onChangeSort }){
+    const [isVisible, setIsVisible] = React.useState(false)
+    const sortList = [
+        {name: 'популярности', sortProperty: 'rating' },
+        {name: 'цене', sortProperty: 'price' },
+        {name: 'алфавиту', sortProperty: 'title' },
+    ];
+
+    const clickSortMenu = (index) => {
+        onChangeSort(index)
+        setIsVisible(false)
+    }
+
+
     return (
         <div className="sort">
             <div className="sort__label">
@@ -15,15 +31,22 @@ function SortPizza (){
                     />
                 </svg>
                 <b>Сортировка по:</b>
-                <span>популярности</span>
+                <span
+                    onClick={() => setIsVisible(!isVisible)}> { sortValue.name } </span>
             </div>
-            <div className="sort__popup">
-                <ul>
-                    <li className="active">популярности</li>
-                    <li>цене</li>
-                    <li>алфавиту</li>
-                </ul>
-            </div>
+            { isVisible && (
+                <div className="sort__popup">
+                    <ul>
+                        {
+                            sortList.map((obj, index) => <li
+                                key={ index }
+                                onClick={() => clickSortMenu(obj) }
+                                className={sortValue.sortProperty === obj.sortProperty? 'active' : ''}>
+                                { obj.name } </li>)
+                        }
+                    </ul>
+                </div>
+            )}
         </div>
     )
 }
